@@ -8,11 +8,11 @@
         <version>2.4.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.urlshortener</groupId>
-    <artifactId>urlshortener</artifactId>
+    <groupId>com.urlshortener.shortener</groupId>
+    <artifactId>URLShortener</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>URLShortener</name>
-    <description>Demo project for Spring Boot</description>
+    <packaging>war</packaging>
     <properties>
         <java.version>1.8</java.version>
         <spring.boot.version>2.4.4</spring.boot.version>
@@ -82,13 +82,8 @@
             <artifactId>h2</artifactId>
 <!--            <version>1.4.197</version>-->
         </dependency>
-
-        <dependency>
-            <groupId>com.urlshortener</groupId>
-            <artifactId>urlshortener</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
     </dependencies>
+
 
     <build>
         <plugins>
