@@ -18,7 +18,31 @@
     <div style="padding-top: 10px;">
         <input type="text" id="outputURL" value="" style="width: 300px; height: 20px;">
         <p></p>
-        <button>페이지 이동</button> <button>통계</button>
+        <input type="button" value="단축 URL 열기" onclick="javascript:window.open($('#outputURL').val());">
+        <input type="button" value="단축 URL 정보" onclick="chartInfo()">
+    </div>
+
+    <div id="chart_div" style="display: none;">
+        <table style="margin-top: 15px; width: 600px">
+            <tbody>
+            <tr>
+                <th>생성일</th>
+                <td><p id="chart_createDate"></p></td>
+            </tr>
+            <tr>
+                <th>URL</th>
+                <td><p id="chart_inputURL"></p></td>
+            </tr>
+            <tr>
+                <th>단축 URL</th>
+                <td><p id="chart_shortURL"></p></td>
+            </tr>
+            <tr>
+                <th>단축 URL 호출 수</th>
+                <td><p id="chart_callCount"></p></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </body>
 
@@ -28,8 +52,6 @@
     var url = window.location.protocol + "//" + window.location.host;
 
     function shortening(){
-        alert("test")
-
         var dst_params = {
             "inputURL" : $("#inputURL").val()
         }
@@ -42,9 +64,13 @@
             async: true
         }).done(function(data) {
             console.log(data);
+            $("#chart_div").hide();
 
             if(data["result"] == 0){
-                $("#outputURL").val(data["outputURL"]);
+                $("#outputURL").val(data["shortURL"]);
+            }else{
+                $("#outputURL").val("");
+                alert(data["msg"]);
             }
 
         }).fail(function(data, textStatus, jqXHR) {
@@ -53,45 +79,52 @@
         });
     }
 
-    function ajax(dst_params){
-        var url = window.location.protocol + "//" + window.location.host + "/decrypt";
-
+    function chartInfo(){
         $.ajax({
-            type : 'POST',
-            url : url,
+            type : 'GET',
+            url : $("#outputURL").val() + "+" ,
             dataType : 'json',
-            data : dst_params,
-            async: true,
+            async: true
         }).done(function(data) {
             console.log(data);
 
-            var encode;
-            var decode;
-            if(data.type == "E"){
-                encode = data.code;
-                decode = data.requestCode;
+            if(data["result"] == 0){
+                $("#chart_div").show();
+
+                $("#chart_inputURL").text(data["inputURL"]);
+                $("#chart_shortURL").text(data["shortURL"]);
+                $("#chart_createDate").text(data["createDate"]);
+                $("#chart_callCount").text(data["callCount"]);
+
             }else{
-                encode = data.requestCode;
-                decode = data.code;
+                $("#chart_div").hide();
+
+                alert(data["msg"]);
             }
 
-
-            var html = "<li>"
-                +  "    <p>Encode</p>"
-                +  "    <P>" + encode + "</p>"
-                +  "</li>"
-                +   "<li>"
-                +  "    <p>Decode</p>"
-                +  "    <P>" + decode + "</p>"
-                +  "</li>";
-
-            $("#photo").append(html);
-
         }).fail(function(data, textStatus, jqXHR) {
+            alert("code = "+ request.status + " message = " + request.responseText + " error = " + error); // 실패 시 처리
             alert("실패");
         });
     }
 
 </script>
 
+
+<style>
+    table {
+        margin-left:auto;
+        margin-right:auto;
+    }
+
+    th {
+        background: aqua;
+        width: 30%;
+    }
+
+    table, td, th {
+        border-collapse : collapse;
+        border : 1px solid black;
+    }
+</style>
 </html>
